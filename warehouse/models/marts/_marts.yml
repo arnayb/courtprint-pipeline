@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: fct_player_season_features
+    description: Qualified player-seasons with per-100-possession features. Model input.
+    data_tests:
+      - unique_combination: {arguments: {columns: [player_id, season]}}
+    columns:
+      - name: player_id
+        data_tests: [not_null]
+      - name: minutes
+        data_tests:
+          - accepted_range: {arguments: {min_value: 500}}
+      - name: pts_100
+        data_tests:
+          - not_null
+          - accepted_range: {arguments: {min_value: 0, max_value: 80}}
+      - name: fg3a_rate
+        data_tests:
+          - accepted_range: {arguments: {min_value: 0, max_value: 1}}
+  - name: dim_players
+    columns:
+      - name: player_id
+        data_tests: [unique, not_null]

@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_base
+    description: Latest pull of box-score totals, one row per player-season.
+    data_tests:
+      - unique_combination: {arguments: {columns: [player_id, season]}}
+    columns:
+      - name: player_id
+        data_tests: [not_null]
+      - name: minutes
+        data_tests:
+          - accepted_range: {arguments: {min_value: 0, max_value: 4000}}
+  - name: stg_advanced
+    data_tests:
+      - unique_combination: {arguments: {columns: [player_id, season]}}
+    columns:
+      - name: ts_pct
+        data_tests:
+          - accepted_range: {arguments: {min_value: 0, max_value: 1.5}}
+      - name: usg_pct
+        data_tests:
+          - accepted_range: {arguments: {min_value: 0, max_value: 1}}

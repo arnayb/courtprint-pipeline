@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Lake + warehouse are rebuilt by the pipeline
+data/lake/
+data/warehouse.duckdb*
+artifacts/
+
+# dbt / Dagster local state
+warehouse/target/
+warehouse/logs/
+warehouse/dbt_packages/
+.dagster/
+logs/
+
+# data/serving/ IS committed: it's what the deployed dashboard reads

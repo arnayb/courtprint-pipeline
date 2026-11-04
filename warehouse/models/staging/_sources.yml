@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: bronze
+    description: >
+      Raw nba_api responses landed as immutable Parquet files in the lake,
+      partitioned by season and ingestion timestamp.
+    meta:
+      external_location: >-
+        read_parquet('{{ env_var("LAKE_ROOT", "../data/lake") }}/bronze/{name}/*/*/*.parquet',
+                     hive_partitioning = true, union_by_name = true)
+    tables:
+      - name: base
+        description: LeagueDashPlayerStats, Base measure, Totals
+      - name: advanced
+        description: LeagueDashPlayerStats, Advanced measure, Totals
+      - name: hustle
+        description: LeagueHustleStatsPlayer, Totals
+      - name: drives
+        description: LeagueDashPtStats Drives, Totals
+      - name: catch_shoot
+        description: LeagueDashPtStats CatchShoot, Totals
+      - name: pullup
+        description: LeagueDashPtStats PullUpShot, Totals
+      - name: post_touch
+        description: LeagueDashPtStats PostTouch, Totals
+      - name: possessions
+        description: LeagueDashPtStats Possessions, Totals
+      - name: passing
+        description: LeagueDashPtStats Passing, Totals

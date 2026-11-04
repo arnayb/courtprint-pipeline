@@ -1,0 +1,12 @@
+courtprint:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('WAREHOUSE_PATH', '../data/warehouse.duckdb') }}"
+      threads: 4
+    # Cloud later: MotherDuck (set MOTHERDUCK_TOKEN) - same SQL, no other changes.
+    prod:
+      type: duckdb
+      path: "md:courtprint"
+      threads: 4

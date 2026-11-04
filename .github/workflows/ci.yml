@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      LAKE_ROOT: ${{ github.workspace }}/data/lake
+      WAREHOUSE_PATH: ${{ github.workspace }}/data/warehouse.duckdb
+      DAGSTER_HOME: ${{ github.workspace }}/.dagster
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Unit + end-to-end tests
+        run: pytest -q
+
+      # CI can't reach stats.nba.com (it blocks cloud IPs), so it runs the
+      # full Dagster graph on synthetic data: same code paths, same dbt tests.
+      - name: Full pipeline on demo data
+        run: make demo
+
+      - name: Dashboard smoke test
+        run: |
+          python - <<'EOF'
+          from streamlit.testing.v1 import AppTest
+          at = AppTest.from_file("dashboard/app.py", default_timeout=120).run()
+          assert not at.exception, [e.value for e in at.exception]
+          EOF
